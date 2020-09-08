@@ -1,32 +1,36 @@
 <template>
     <div id="app">
-        <div id="nav">
-            <router-link to="/">Home</router-link> |
-            <router-link to="/about">About</router-link>
-        </div>
+        <NavBar />
         <router-view />
     </div>
+    <div id="teleport-target" />
 </template>
+
+<script lang="ts">
+import { defineComponent, inject, provide } from 'vue';
+import useTaskManager from './components/TaskManager';
+import useAuth from './components/AuthState';
+import { AuthStore } from '@/components/AuthState';
+import AuthKey from './components/AuthStateKey';
+import TaskManagerKey from './components/TaskManagerKey';
+import NavBar from './views/NavBar.vue';
+
+export default defineComponent({
+    components: {
+        NavBar,
+    },
+    setup: () => {
+        provide(AuthKey, useAuth());
+        provide(TaskManagerKey, useTaskManager());
+        const { state } = inject(AuthKey) as AuthStore;
+        return { state };
+    },
+});
+</script>
 
 <style>
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
-}
-
-#nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-    color: #42b983;
 }
 </style>
