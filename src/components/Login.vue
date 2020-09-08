@@ -25,7 +25,7 @@ import { defineComponent, inject } from 'vue';
 export default defineComponent({
     setup: () => {
         const { state, signIn, signOut } = inject(AuthKey) as AuthStore;
-        const { startListen, endListen } = inject(
+        const { schedules, startListen, endListen } = inject(
             TaskManagerKey
         ) as TaskManageStore;
 
@@ -34,7 +34,11 @@ export default defineComponent({
                 if (!result.user) return;
                 startListen(result.user.uid);
             });
-        const doLogout = () => signOut().then(() => endListen());
+        const doLogout = () => {
+            signOut().then(() => endListen());
+            // 表示用dataを消す
+            schedules.value = [];
+        };
         return { state, doLogin, doLogout };
     },
 });
