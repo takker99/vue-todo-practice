@@ -8,10 +8,10 @@
 
 <script lang="ts">
 import { defineComponent, inject, provide } from 'vue';
-import useTaskManager from './components/TaskManager';
-import useAuth from './components/AuthState';
 import { AuthStore } from '@/components/AuthState';
+import useAuth from './components/AuthState';
 import AuthKey from './components/AuthStateKey';
+import useTaskManager from './components/TaskManager';
 import TaskManagerKey from './components/TaskManagerKey';
 import NavBar from './views/NavBar.vue';
 
