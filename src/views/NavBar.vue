@@ -25,6 +25,9 @@
                     <router-link to="/about" class="navbar-item">
                         About
                     </router-link>
+                    <router-link to="/task_chute" class="navbar-item">
+                        Task Chute
+                    </router-link>
                 </div>
 
                 <div class="navbar-end">

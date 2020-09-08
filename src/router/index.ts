@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 // import Home from '../views/Home.vue';
+import TaskBoard from '../components/TaskBoard.vue';
 
 const routes: Array<RouteRecordRaw> = [
     // {
@@ -7,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     //     name: 'Home',
     //     component: Home,
     // },
+    {
+        path: '/task_chute',
+        name: 'TaskBoard',
+        component: TaskBoard,
+    },
     {
         path: '/about',
         name: 'About',
