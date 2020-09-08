@@ -22,9 +22,9 @@
                     <a class="navbar-item">
                         POST
                     </a>
-                    <router-link to="/about" class="navbar-item"
-                        >About</router-link
-                    >
+                    <router-link to="/about" class="navbar-item">
+                        About
+                    </router-link>
                 </div>
 
                 <div class="navbar-end">
