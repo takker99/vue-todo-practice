@@ -16,8 +16,23 @@
                     <!-- 未ログイン時にはVue.jsのlogoを表示 -->
                     <img v-else src="../assets/logo.png" />
                 </div>
+                <a
+                    role="button"
+                    class="navbar-burger burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    v-on:click="changeBurgerVisibillity"
+                    v-bind:class="{ 'is-active': burgerVisibillity }"
+                >
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            <div class="navbar-menu">
+            <div
+                class="navbar-menu"
+                v-bind:class="{ 'is-active': burgerVisibillity }"
+            >
                 <div class="navbar-start">
                     <a class="navbar-item">
                         POST
@@ -43,7 +58,7 @@
 <script lang="ts">
 import { AuthStore } from '@/components/AuthState';
 import AuthKey from '@/components/AuthStateKey';
-import { defineComponent, inject } from 'vue';
+import { defineComponent, inject, ref } from 'vue';
 import 'firebase/auth';
 import Login from '@/components/Login.vue';
 
@@ -53,8 +68,11 @@ export default defineComponent({
         Login,
     },
     setup: () => {
+        const burgerVisibillity = ref(false);
+        const changeBurgerVisibillity = () =>
+            (burgerVisibillity.value = !burgerVisibillity.value);
         const { state } = inject(AuthKey) as AuthStore;
-        return { state };
+        return { state, burgerVisibillity, changeBurgerVisibillity };
     },
 });
 </script>
