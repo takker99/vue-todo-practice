@@ -1,4 +1,5 @@
 <template>
+    <AddTaskArea />
     <div class="column" v-for="schedule in schedules" :key="schedule.id">
         <article class="box media">
             <figure class="media-left">
@@ -10,8 +11,13 @@
                 <div class="content">
                     <p>
                         {{ schedule.title }}<br />
-                        {{ `"${schedule.description}"` }}
-                        <a class="delete is-small" />
+                        <a :href="schedule.description" target="_blank">
+                            {{ schedule.description }}
+                        </a>
+                        <a
+                            class="delete is-small"
+                            @click="deleteSchedule(schedule.id)"
+                        />
                     </p>
                 </div>
             </div>
@@ -25,13 +31,19 @@ import AuthKey from '@/components/AuthStateKey';
 import { TaskManageStore } from '@/components/TaskManager';
 import TaskManagerKey from '@/components/TaskManagerKey';
 import { defineComponent, inject } from 'vue';
+import AddTaskArea from '@/components/AddTaskArea.vue';
 
 export default defineComponent({
     name: 'TaskBoard',
+    components: {
+        AddTaskArea,
+    },
     setup: () => {
-        const { schedules } = inject(TaskManagerKey) as TaskManageStore;
+        const { schedules, deleteSchedule } = inject(
+            TaskManagerKey
+        ) as TaskManageStore;
         const { state } = inject(AuthKey) as AuthStore;
-        return { state, schedules };
+        return { state, schedules, deleteSchedule };
     },
 });
 </script>

@@ -84,9 +84,44 @@ export default function useTaskManager() {
                     .forEach(docQuery => {
                         /* eslint-disable no-console */
                         console.log(
-                            `New comment: ${JSON.stringify(docQuery.data())}`
+                            `New schedule: ${JSON.stringify(docQuery.data())}`
                         );
                         schedules.value.push(makeSchedule(docQuery));
+                    });
+                // 変更されたscheduleは書き換える
+                changedDocuments
+                    .filter(
+                        changedDocument => changedDocument.type == 'modified'
+                    )
+                    .map(changedDocument => changedDocument.doc)
+                    .forEach(docQuery => {
+                        /* eslint-disable no-console */
+                        console.log(
+                            `Modified schedule: ${JSON.stringify(
+                                docQuery.data()
+                            )}`
+                        );
+                        const temp = schedules.value.filter(
+                            schedule => schedule.id !== docQuery.id
+                        );
+                        schedules.value = [...temp, makeSchedule(docQuery)];
+                    });
+                // 削除されたscheduleは取り除く
+                changedDocuments
+                    .filter(
+                        changedDocument => changedDocument.type == 'removed'
+                    )
+                    .map(changedDocument => changedDocument.doc)
+                    .forEach(docQuery => {
+                        /* eslint-disable no-console */
+                        console.log(
+                            `Removed schedule: ${JSON.stringify(
+                                docQuery.data()
+                            )}`
+                        );
+                        schedules.value = schedules.value.filter(
+                            schedule => schedule.id !== docQuery.id
+                        );
                     });
             });
     };
