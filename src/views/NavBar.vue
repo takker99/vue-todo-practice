@@ -2,7 +2,7 @@
     <div class="container">
         <nav
             id="nav"
-            class="navbar is-light"
+            class="navbar is-light is-fixed-top"
             role="navigation"
             aria-label="main navigation"
         >
