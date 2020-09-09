@@ -1,27 +1,53 @@
 <template>
-    <AddTaskArea />
-    <div class="column" v-for="schedule in schedules" :key="schedule.id">
-        <article class="box media">
-            <figure class="media-left">
-                <p class="image is-48x48">
-                    <img :src="state.userInfo.photoURL" />
-                </p>
-            </figure>
-            <div class="media-content">
-                <div class="content">
-                    <p>
-                        {{ schedule.title }}<br />
-                        <a :href="schedule.description" target="_blank">
-                            {{ schedule.description }}
-                        </a>
-                        <a
-                            class="delete is-small"
-                            @click="deleteSchedule(schedule.id)"
+    <div class="column">
+        <AddTaskArea />
+        <div
+            class="column"
+            v-for="(schedule, index) in schedules"
+            :key="schedule.id"
+        >
+            <article class="box media">
+                <div class="media-content">
+                    <div class="content">
+                        <input
+                            class="input"
+                            type="text"
+                            readonly
+                            v-bind:id="`schedule-item-no-${index}`"
+                            @keydown.prevent.tab.exact="moveNext(index)"
+                            @keydown.prevent.shift.tab="movePrev(index)"
+                            @keydown.prevent.j="moveNext(index)"
+                            @keydown.prevent.k="movePrev(index)"
+                            :value="schedule.title"
                         />
-                    </p>
+                        <p>
+                            <a :href="schedule.description" target="_blank">
+                                Show description
+                            </a>
+                            <span
+                                :data-tooltip="
+                                    datetimestamp(schedule.timeSpan.start)
+                                "
+                                class="has-tooltip-bottom"
+                                >{{ timestamp(schedule.timeSpan.start) }}</span
+                            >
+
+                            <span
+                                :data-tooltip="
+                                    datetimestamp(schedule.timeSpan.end)
+                                "
+                                class="has-tooltip-bottom"
+                                >{{ timestamp(schedule.timeSpan.end) }}</span
+                            >
+                            <a
+                                class="delete"
+                                @click="deleteSchedule(schedule.id)"
+                            />
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </article>
+            </article>
+        </div>
     </div>
 </template>
 
@@ -43,7 +69,43 @@ export default defineComponent({
             TaskManagerKey
         ) as TaskManageStore;
         const { state } = inject(AuthKey) as AuthStore;
-        return { state, schedules, deleteSchedule };
+
+        const moveNext = (index: number) => {
+            if (schedules.value.length - 1 == index) return;
+            const nextItem = document.getElementById(
+                `schedule-item-no-${index + 1}`
+            );
+            if (!nextItem) return;
+            nextItem.focus();
+        };
+
+        const movePrev = (index: number) => {
+            if (index == 0) return;
+            const prevItem = document.getElementById(
+                `schedule-item-no-${index - 1}`
+            );
+            if (!prevItem) return;
+            prevItem.focus();
+        };
+        const zero = (n: number) => String(n).padStart(2, '0');
+        const timestamp = (d: Date) =>
+            `${zero(d.getHours())}:${zero(d.getMinutes())}`;
+        const datetimestamp = (d: Date) =>
+            `${d.getFullYear()}-${zero(d.getMonth() + 1)}-${zero(
+                d.getDate()
+            )} ${zero(d.getHours())}:${zero(d.getMinutes())}:${zero(
+                d.getSeconds()
+            )}`;
+
+        return {
+            state,
+            schedules,
+            deleteSchedule,
+            moveNext,
+            movePrev,
+            timestamp,
+            datetimestamp,
+        };
     },
 });
 </script>

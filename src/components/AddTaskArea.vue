@@ -5,13 +5,23 @@
         </span>
     </a>
     <!-- 以下要素がid="teleport-target"内に描画される -->
-    <textarea
-        v-if="isVisible"
-        class="textarea"
-        placeholder="Write new schedules..."
-        v-model="scheduleNames"
-        @keyup.alt.enter="addSchedules"
-    />
+    <div class="card" v-if="isVisible">
+        <div class="card-content">
+            <textarea
+                class="textarea"
+                placeholder="Write new schedules..."
+                v-model="scheduleNames"
+                @keyup.alt.enter="addSchedules"
+            />
+        </div>
+        <footer class="card-footer">
+            <p class="card-footer-item">
+                <button class="button is-success" @click="addSchedules">
+                    Add schedules
+                </button>
+            </p>
+        </footer>
+    </div>
 </template>
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue';
@@ -24,12 +34,17 @@ export default defineComponent({
         const scheduleNames = ref('');
         const { addSchedule } = inject(TaskManagerKey) as TaskManageStore;
 
+        const toggleTextArea = () => (isVisible.value = !isVisible.value);
         const addSchedules = () => {
             if (scheduleNames.value.trim() == '') return;
-            addSchedule(scheduleNames.value.trim().split('\n'));
+            addSchedule(
+                scheduleNames.value
+                    .split('\n')
+                    .filter(scheduleName => scheduleName != '')
+            );
             scheduleNames.value = '';
+            toggleTextArea();
         };
-        const toggleTextArea = () => (isVisible.value = !isVisible.value);
 
         return { isVisible, toggleTextArea, addSchedules, scheduleNames };
     },
