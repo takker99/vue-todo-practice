@@ -24,20 +24,15 @@
                             <a :href="schedule.description" target="_blank">
                                 Show description
                             </a>
-                            <span
-                                :data-tooltip="
-                                    datetimestamp(schedule.timeSpan.start)
-                                "
+                            <abbr
+                                :title="datetimestamp(schedule.timeSpan.start)"
                                 class="has-tooltip-bottom"
-                                >{{ timestamp(schedule.timeSpan.start) }}</span
+                                >{{ timestamp(schedule.timeSpan.start) }}</abbr
                             >
-
-                            <span
-                                :data-tooltip="
-                                    datetimestamp(schedule.timeSpan.end)
-                                "
+                            <abbr
+                                :title="datetimestamp(schedule.timeSpan.end)"
                                 class="has-tooltip-bottom"
-                                >{{ timestamp(schedule.timeSpan.end) }}</span
+                                >{{ timestamp(schedule.timeSpan.end) }}</abbr
                             >
                             <a
                                 class="delete"
