@@ -1,32 +1,32 @@
 import { db } from '@/plugins/firebase';
 import { ref, inject } from 'vue';
-import { Schedule, TimeSpan } from '@/types/Schedule';
+import { Schedule } from '@/types/Schedule';
 import { AuthStore } from '@/components/AuthState';
 import AuthKey from '@/components/AuthStateKey';
 import { firestore } from 'firebase/app';
+import { Duration, compareAsc } from 'date-fns';
 
 function makeSchedule(docQuery: firestore.QueryDocumentSnapshot): Schedule {
     const data = docQuery.data();
-    return {
+
+    // 必須項目を入れる
+    const schedule: Schedule = {
         id: docQuery.id,
         title: data.title,
         description: data.description,
-        timeSpan: {
-            start: data.timeSpan.start.toDate(),
-            end: data.timeSpan.end.toDate(),
-        },
-        records: {
-            timeSpans: data.records.timeSpans.map(
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (timeSpan: { start: any; end: any }) =>
-                    new Object({
-                        start: timeSpan.start.toDate(),
-                        end: timeSpan.end.toDate(),
-                    }) as TimeSpan
-            ),
-            log: data.records.log,
-        },
+        duration: { seconds: data.duration },
     };
+
+    // option項目を入れる
+    if (data.start) schedule.start = data.start.toDate();
+    if (data.record)
+        schedule.record = {
+            start: data.record.start.toDate(),
+            duration: { seconds: data.records.duration } as Duration,
+            log: data.record.log,
+        };
+
+    return schedule;
 }
 
 export default function useTaskManager() {
@@ -44,12 +44,9 @@ export default function useTaskManager() {
                 .collection('schedules')
                 .add({
                     title: taskName,
+                    start: now,
                     description: `https://scrapbox.io/takker-memex/${taskName}`,
-                    timeSpan: { start: now, end: now },
-                    records: {
-                        timeSpans: [],
-                        log: `https://scrapbox.io/takker-memex/${taskName}_logging`,
-                    },
+                    duration: 25 * 60,
                 })
         );
     };
@@ -123,6 +120,14 @@ export default function useTaskManager() {
                             schedule => schedule.id !== docQuery.id
                         );
                     });
+
+                //最後に予定開始時刻順に並び替える
+                schedules.value.sort((a, b) => {
+                    if (!a.start && !b.start) return 0;
+                    if (!a.start) return -1;
+                    if (!b.start) return 1;
+                    return compareAsc(a.start, b.start);
+                });
             });
     };
 

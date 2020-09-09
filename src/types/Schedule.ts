@@ -1,10 +1,8 @@
-export interface TimeSpan {
-    start: Date;
-    end: Date;
-}
+import { Duration } from 'date-fns';
 
-export interface Records {
-    timeSpans: TimeSpan[];
+export interface Record {
+    start: Date;
+    duration: Duration;
     log: string;
 }
 
@@ -12,6 +10,7 @@ export interface Schedule {
     id: string;
     title: string;
     description: string;
-    timeSpan: TimeSpan;
-    records: Records;
+    start?: Date;
+    duration: Duration;
+    record?: Record;
 }
