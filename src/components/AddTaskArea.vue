@@ -40,6 +40,7 @@ export default defineComponent({
             addSchedule(
                 scheduleNames.value
                     .split('\n')
+                    .map(scheduleName => scheduleName.trim())
                     .filter(scheduleName => scheduleName != '')
             );
             scheduleNames.value = '';
